@@ -1,17 +1,33 @@
 import React, { useState } from 'react';
 import { Alert, Button, Image, Pressable, SafeAreaView, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { auth } from '@/src/config/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 const logo = require('@/assets/images/logo.png');
 
-export default function LoginScreen() {
+export default function SignupScreen() {
   const [click, setClick] = useState(false);
   const [email, setEmail]=  useState("");
   const [password, setPassword]=  useState("");
-  
+
+  // Logic to create a valid new user
+  const handleSignUp = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Successfully created new user
+        const user = userCredential.user;
+        Alert.alert("User Created Successfully!", "Welcome " + user.email);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        Alert.alert("Signup Failed :(", errorMessage + " Error code: " + errorCode);
+      });
+  };
+    
   return (
     <SafeAreaView style={styles.container}>
         <Image source={logo} style={styles.image} resizeMode='contain' />
-        <Text style={styles.title}>Login</Text>
+        <Text style={styles.title}>Sign Up</Text>
         <View style={styles.inputView}>
             <TextInput style={styles.input} placeholder='EMAIL' value={email} onChangeText={setEmail} autoCorrect={false}
         autoCapitalize='none' />
@@ -24,25 +40,22 @@ export default function LoginScreen() {
                 <Text style={styles.rememberText}>Remember Me</Text>
             </View>
             <View>
-                <Pressable onPress={() => Alert.alert("Forget Password!")}>
+                <Pressable onPress={() => Alert.alert("Forgot Password!")}>
                     <Text style={styles.forgetText}>Forgot Password?</Text>
                 </Pressable>
             </View>
         </View>
 
         <View style={styles.buttonView}>
-            <Pressable style={styles.button} onPress={() => Alert.alert("Login Successful!")}>
-                <Text style={styles.buttonText}>LOGIN</Text>
+            <Pressable style={styles.button} onPress={handleSignUp}>
+                <Text style={styles.buttonText}>SIGN UP</Text>
             </Pressable>
         </View>
 
-        <Text style={styles.footerText}>Don't Have Account?<Text style={styles.signup}>  Sign Up</Text></Text>
-
-        
+        <Text style={styles.footerText}>Already Have an Account?<Text style={styles.login}> Login</Text></Text>
     </SafeAreaView>
   )
 }
-
 
 const styles = StyleSheet.create({
   container : {
@@ -129,7 +142,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color : "gray",
   },
-  signup : {
+  login : {
     color : "red",
     fontSize : 13
   }
