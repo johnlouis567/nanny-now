@@ -1,12 +1,30 @@
 import React, { useState } from 'react';
 import { Alert, Button, Image, Pressable, SafeAreaView, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { auth } from '@/src/config/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Link } from 'expo-router';
+
 const logo = require('@/assets/images/logo.png');
 
 export default function LoginScreen() {
   const [click, setClick] = useState(false);
   const [email, setEmail]=  useState("");
   const [password, setPassword]=  useState("");
+  //
+  // Logic to create a valid new user
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Successfully Logged in user
+        const user = userCredential.user;
+        Alert.alert("User Recognized!", "Welcome Back " + user.email);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        Alert.alert("Login Failed :(", errorMessage + " Error code: " + errorCode);
+      });
+  };
   
   return (
     <SafeAreaView style={styles.container}>
@@ -31,14 +49,12 @@ export default function LoginScreen() {
         </View>
 
         <View style={styles.buttonView}>
-            <Pressable style={styles.button} onPress={() => Alert.alert("Login Successful!")}>
+            <Pressable style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>LOGIN</Text>
             </Pressable>
         </View>
 
-        <Text style={styles.footerText}>Don't Have Account?<Text style={styles.signup}>  Sign Up</Text></Text>
-
-        
+        <Text style={styles.footerText}>Don't Have Account?<Link href={'/signup'} style={styles.signup}>  Sign Up</Link></Text>
     </SafeAreaView>
   )
 }

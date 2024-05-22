@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Alert, Button, Image, Pressable, SafeAreaView, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { auth } from '@/src/config/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { Link } from 'expo-router';
+
 const logo = require('@/assets/images/logo.png');
 
 export default function SignupScreen() {
@@ -51,8 +53,6 @@ export default function SignupScreen() {
                 <Text style={styles.buttonText}>SIGN UP</Text>
             </Pressable>
         </View>
-
-        <Text style={styles.footerText}>Already Have an Account?<Text style={styles.login}> Login</Text></Text>
     </SafeAreaView>
   )
 }
